@@ -1,0 +1,40 @@
+body {
+  background: rgb(240, 240, 240);
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  text-align: center;
+}
+
+.is-hidden {
+  display: none;
+}
+
+.recall-grid {
+  display: inline-block;
+  font-size: 0;
+}
+
+.recall-grid-row {
+  margin-bottom: 5px;
+}
+
+.recall-grid-tile {
+  display: inline-block;
+  width: 100px;
+  height: 100px;
+
+  background: rgb(244,154,193);
+
+  transition: background 0.1s ease;
+}
+
+.recall-grid-tile + .recall-grid-tile {
+  margin-left: 5px;
+}
+
+.recall-grid-tile:active {
+  background: rgb(125, 167, 217);
+}
+
+.recall-grid-tile.is-selected {
+  background: rgb(161, 134, 190);
+}
