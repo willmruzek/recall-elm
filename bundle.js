@@ -9623,26 +9623,35 @@ var _user$project$Main$update = F2(
 			case 'NoOp':
 				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 			case 'SelectTile':
-				var _p3 = _p2._1;
-				var newBoard = (model.gameOver || model.isDisabled) ? model.board : A3(
+				var _p4 = _p2._1;
+				var _p3 = _p2._0;
+				var isSelected = A2(
+					_elm_lang$core$Maybe$withDefault,
+					false,
+					A2(
+						_elm_lang$core$Array$get,
+						_p3,
+						A2(
+							_elm_lang$core$Maybe$withDefault,
+							_elm_lang$core$Array$empty,
+							A2(_elm_lang$core$Array$get, _p4, model.board))));
+				var newTurnCount = (model.gameOver || (model.isDisabled || isSelected)) ? model.turnCount : (model.turnCount + 1);
+				var newGameOver = (model.gameOver || model.isDisabled) ? model.gameOver : _elm_lang$core$Native_Utils.eq(newTurnCount, 9);
+				var newBoard = (model.gameOver || (model.isDisabled || isSelected)) ? model.board : A3(
 					_elm_lang$core$Array$set,
-					_p3,
+					_p4,
 					A3(
 						_elm_lang$core$Array$set,
-						_p2._0,
+						_p3,
 						true,
 						A2(
 							_elm_lang$core$Maybe$withDefault,
 							_elm_lang$core$Array$fromList(
 								_elm_lang$core$Native_List.fromArray(
 									[])),
-							A2(_elm_lang$core$Array$get, _p3, model.board))),
+							A2(_elm_lang$core$Array$get, _p4, model.board))),
 					model.board);
-				var newPlayerWon = (model.gameOver || model.isDisabled) ? model.playerWon : _elm_lang$core$Native_Utils.eq(
-					_elm_lang$core$Array$toList(model.expectedBoard),
-					_elm_lang$core$Array$toList(newBoard));
-				var newTurnCount = (model.gameOver || model.isDisabled) ? model.turnCount : (model.turnCount + 1);
-				var newGameOver = (model.gameOver || model.isDisabled) ? model.gameOver : _elm_lang$core$Native_Utils.eq(newTurnCount, 9);
+				var newPlayerWon = (model.gameOver || model.isDisabled) ? model.playerWon : _elm_lang$core$Native_Utils.eq(model.expectedBoard, newBoard);
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
@@ -9659,12 +9668,12 @@ var _user$project$Main$update = F2(
 					_1: _user$project$Main$initializeGame
 				};
 			case 'NewBoard':
-				var _p4 = _p2._0;
+				var _p5 = _p2._0;
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
-						{board: _p4, expectedBoard: _p4}),
+						{board: _p5, expectedBoard: _p5}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			default:
