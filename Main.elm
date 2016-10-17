@@ -100,14 +100,25 @@ update msg model =
 
         SelectTile idx idy ->
             let
+                isSelected =
+                    Maybe.withDefault False
+                        (Array.get
+                            idx
+                            (Maybe.withDefault Array.empty (Array.get idy model.board))
+                        )
+
                 newTurnCount =
-                    if model.gameOver || model.isDisabled then
+                    if model.gameOver || model.isDisabled || isSelected then
                         model.turnCount
                     else
                         model.turnCount + 1
 
                 newBoard =
-                    if model.gameOver || model.isDisabled then
+                    if
+                        model.gameOver
+                            || model.isDisabled
+                            || isSelected
+                    then
                         model.board
                     else
                         Array.set
@@ -129,7 +140,7 @@ update msg model =
                     if model.gameOver || model.isDisabled then
                         model.playerWon
                     else
-                        Array.toList model.expectedBoard == Array.toList newBoard
+                        model.expectedBoard == newBoard
             in
                 ( { model
                     | turnCount = newTurnCount
