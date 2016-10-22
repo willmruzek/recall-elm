@@ -32,28 +32,25 @@ type alias Model =
 
 initModel : ( Model, Cmd Msg )
 initModel =
-    ( { board = generateSquareMatrix 5 False
+    ( { board = generateEmptyMatrix 5
       , expectedBoard = Array.fromList []
       , gameOver = False
       , playerWon = False
       , turnCount = 0
       , isDisabled = True
       }
-    , initializeGame
+    , initializeGameBoard
     )
 
 
-initializeGame : Cmd Msg
-initializeGame =
-    Cmd.batch
-        [ Random.generate NewBoard (squareMatrixGenerator 5 9 False)
-        , Task.perform NoOp AfterSleep (Process.sleep (3 * Time.second))
-        ]
+initializeGameBoard : Cmd Msg
+initializeGameBoard =
+    Random.generate NewBoard (squareMatrixGenerator 5 9 False)
 
 
-generateSquareMatrix : Int -> Bool -> Array (Array Bool)
-generateSquareMatrix num value =
-    Array.repeat num (Array.repeat num value)
+generateEmptyMatrix : Int -> Array (Array Bool)
+generateEmptyMatrix num =
+    Array.repeat num (Array.repeat num False)
 
 
 indexGenerator : Int -> Int -> Random.Generator (Array ( Int, Int ))
@@ -88,7 +85,7 @@ type Msg
     = NoOp String
     | SelectTile Int Int
     | ShuffleBoard
-    | NewBoard (Array (Array Bool))
+    | NewBoard Board
     | AfterSleep ()
 
 
@@ -158,7 +155,7 @@ update msg model =
                 , gameOver = False
                 , isDisabled = True
               }
-            , initializeGame
+            , initializeGameBoard
             )
 
         NewBoard newBoard ->
@@ -166,12 +163,12 @@ update msg model =
                 | board = newBoard
                 , expectedBoard = newBoard
               }
-            , Cmd.none
+            , Task.perform NoOp AfterSleep (Process.sleep (3 * Time.second))
             )
 
         AfterSleep _ ->
             ( { model
-                | board = generateSquareMatrix 5 False
+                | board = generateEmptyMatrix 5
                 , gameOver = False
                 , isDisabled = False
               }
