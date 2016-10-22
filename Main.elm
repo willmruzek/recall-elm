@@ -96,57 +96,7 @@ update msg model =
             ( model, Cmd.none )
 
         SelectTile idx idy ->
-            let
-                isSelected =
-                    Maybe.withDefault False
-                        (Array.get
-                            idx
-                            (Maybe.withDefault Array.empty (Array.get idy model.board))
-                        )
-
-                newTurnCount =
-                    if model.gameOver || model.isDisabled || isSelected then
-                        model.turnCount
-                    else
-                        model.turnCount + 1
-
-                newBoard =
-                    if
-                        model.gameOver
-                            || model.isDisabled
-                            || isSelected
-                    then
-                        model.board
-                    else
-                        Array.set
-                            idy
-                            (Array.set
-                                idx
-                                True
-                                (Maybe.withDefault (Array.fromList []) (Array.get idy model.board))
-                            )
-                            model.board
-
-                newGameOver =
-                    if model.gameOver || model.isDisabled then
-                        model.gameOver
-                    else
-                        newTurnCount == 9
-
-                newPlayerWon =
-                    if model.gameOver || model.isDisabled then
-                        model.playerWon
-                    else
-                        model.expectedBoard == newBoard
-            in
-                ( { model
-                    | turnCount = newTurnCount
-                    , board = newBoard
-                    , gameOver = newGameOver
-                    , playerWon = newPlayerWon
-                  }
-                , Cmd.none
-                )
+            selectTile model idx idy
 
         ShuffleBoard ->
             ( { model
@@ -174,6 +124,61 @@ update msg model =
               }
             , Cmd.none
             )
+
+
+selectTile : Model -> Int -> Int -> ( Model, Cmd Msg )
+selectTile model idx idy =
+    let
+        isSelected =
+            Maybe.withDefault False
+                (Array.get
+                    idx
+                    (Maybe.withDefault Array.empty (Array.get idy model.board))
+                )
+
+        newTurnCount =
+            if model.gameOver || model.isDisabled || isSelected then
+                model.turnCount
+            else
+                model.turnCount + 1
+
+        newBoard =
+            if
+                model.gameOver
+                    || model.isDisabled
+                    || isSelected
+            then
+                model.board
+            else
+                Array.set
+                    idy
+                    (Array.set
+                        idx
+                        True
+                        (Maybe.withDefault (Array.fromList []) (Array.get idy model.board))
+                    )
+                    model.board
+
+        newGameOver =
+            if model.gameOver || model.isDisabled then
+                model.gameOver
+            else
+                newTurnCount == 9
+
+        newPlayerWon =
+            if model.gameOver || model.isDisabled then
+                model.playerWon
+            else
+                model.expectedBoard == newBoard
+    in
+        ( { model
+            | turnCount = newTurnCount
+            , board = newBoard
+            , gameOver = newGameOver
+            , playerWon = newPlayerWon
+          }
+        , Cmd.none
+        )
 
 
 
