@@ -137,7 +137,11 @@ selectTile model idx idy =
                 )
 
         newTurnCount =
-            if model.gameOver || model.isDisabled || isSelected then
+            if
+                model.gameOver
+                    || model.isDisabled
+                    || isSelected
+            then
                 model.turnCount
             else
                 model.turnCount + 1
